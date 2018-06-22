@@ -105,6 +105,7 @@ export default {
 }
 .jobName{
   font-weight: 600;
+  font-size: 18px;
 }
 .salary{
   color: darkslategray
