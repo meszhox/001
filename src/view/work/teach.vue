@@ -75,7 +75,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .teach{
   background: #ffffff;
 }
@@ -86,7 +86,7 @@ export default {
   position: fixed;
   top: 0;
 }
-.teach .van-nav-bar__arrow::before,.van-nav-bar__text,.icon-more::before{
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text,.icon-more::before{
   color: #ffffff;
 }
 .auther{

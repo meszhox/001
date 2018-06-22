@@ -1,5 +1,5 @@
 <template>
-  <div class="SQrecord">
+  <div>
     <van-nav-bar title="申请记录" left-text="返回" left-arrow  @click-left="goback">
       <van-icon  class="iconfont icon-more" slot="right" />
     </van-nav-bar>
@@ -121,7 +121,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .van-nav-bar {
   background: #1b1b1f;
   color: #ffffff;
@@ -129,13 +129,13 @@ export default {
   position: fixed;
   top: 0;
 }
-.SQrecord .van-nav-bar__arrow::before,.van-nav-bar__text,.icon-more::before{
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text,.icon-more::before{
   color: #ffffff;
 }
 .display{
   display: none;
 }
-.SQrecord .van-collapse{
+.van-collapse{
   margin: 10px auto;
 }
 .workName{
@@ -157,7 +157,7 @@ export default {
   display: block;
   line-height: 25px;
 }
-.SQrecord .van-cell__right-icon{
+.van-collapse-item >>> .van-cell__right-icon{
   margin-top: 22px;
 }
 .comfireBtn{
@@ -170,7 +170,7 @@ export default {
   color: #ffffff;
   background: #234
 }
-.SQrecord .icon-delete:before{
+.icon-delete:before{
   position: absolute;
   float: right;
   right: 10px;

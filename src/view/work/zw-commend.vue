@@ -234,7 +234,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .van-nav-bar {
   background: #1b1b1f;
   color: #ffffff;
@@ -242,7 +242,7 @@ export default {
   position: fixed;
   top: 0;
 }
-.zwCommend .van-nav-bar__arrow::before,.van-nav-bar__text,.icon-more::before{
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text,.icon-more::before{
   color: #ffffff;
 }
 .active{
@@ -261,6 +261,9 @@ export default {
   height: 40px;
   line-height: 40px;
   font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .commend-item{
   height: 90px;

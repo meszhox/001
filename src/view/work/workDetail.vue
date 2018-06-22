@@ -3,7 +3,7 @@
   <van-nav-bar title="职位详情" left-text="返回" left-arrow @click-left="goback" >
       <i class="iconfont icon-more" slot="right" />
   </van-nav-bar>
-  <div style="background:#fff;height:215px">
+  <div class="detail-head">
     <div class="Pagetitle">
       <span class="jobName">操作工</span>
       <span class="salary">[4千-5千]</span>
@@ -20,12 +20,18 @@
         <i class="iconfont icon-shizhong itemIcon"></i>&nbsp;<span>04-21发布</span>
       </div>
     </div>
-    <span class="testTime">无试用期</span>
+    <div class="advant-items">
+      <span class="testTime">无试用期</span>
+      <span class="testTime">包吃</span>
+      <span class="testTime">包住</span>
+      <span class="testTime">五险一金</span>
+      <span class="testTime">带薪年假</span>
+    </div>
   </div>
   <div class="workInfo">
     <div class="describeTitle">
       <i class="iconfont icon-xiangmu"></i><span class="zw-ms">职位描述</span>
-      <span class="gs-js">公司介绍 > </span>
+      <span class="gs-js" @click="tocompanyInfo">公司介绍 > </span>
     </div>
     <div class="respose">
       <p>岗位职责：</p>
@@ -80,6 +86,9 @@ export default {
     },
     collected(){
       this.isCollect = !this.isCollect
+    },
+    tocompanyInfo(){
+      this.$router.push({name:'company-information'})
     }
   }
 }
@@ -103,6 +112,12 @@ export default {
   margin-left: 5%;
   border-bottom: 1px solid #dfdfdf;
 }
+.detail-head{
+  min-height: 215px;
+  max-height: 270px;
+  background: #ffffff;
+  overflow: hidden;
+}
 .jobName{
   font-weight: 600;
   font-size: 18px;
@@ -114,6 +129,9 @@ export default {
   float: right;
   font-size: 18px;
   color: rgb(233,0,0)
+}
+.requires{
+  height: 70px;
 }
 .requireItems{
   width: 31%;
@@ -128,16 +146,20 @@ export default {
   font-size: 20px;
   color: darkslategrey
 }
+.advant-items{
+  width: 90%;
+  margin-left: 7%;
+}
 .testTime{
   display: block;
-  margin: auto;
+  margin: auto 5%;
   border: 2px solid darkslategrey;
-  margin-top: 70px;
   width: 20%;
   text-align: center;
   font-size: 14px;
   color: darkslategrey;
   margin-bottom: 20px;
+  float: left;
 }
 .workInfo{
   background: #ffffff;

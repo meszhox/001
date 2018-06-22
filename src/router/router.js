@@ -64,6 +64,11 @@ const routes = [{
   name:'resume',
   component: () => import('../view/work/resume.vue'),
   meta:{ title: '我的简历'}
+},
+{
+  name:'company-information',
+  component: () => import('../view/company/company-information.vue'),
+  meta:{ title: '公司详情'}
 }
 ];
 

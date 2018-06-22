@@ -102,7 +102,7 @@ export default {
 .comLogo img{
   width: 61px;
   display: block;
-  margin: 30px auto
+  margin: 35px auto
 }
 .company-item{
   height:90px;

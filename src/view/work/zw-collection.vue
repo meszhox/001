@@ -1,5 +1,5 @@
 <template>
-  <div class="zwCollent">
+  <div>
     <van-nav-bar title="职位收藏" left-text="返回" left-arrow @click-left="goback" >
       <i class="iconfont icon-more" slot="right" />
     </van-nav-bar>
@@ -68,7 +68,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .van-nav-bar {
   background: #1b1b1f;
   color: #ffffff;
@@ -76,7 +76,7 @@ export default {
   position: fixed;
   top: 0;
 }
-.zwCollent .van-nav-bar__arrow::before,.van-nav-bar__text,.icon-more::before{
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text,.icon-more::before{
   color: #ffffff;
 }
 .collect-item{
