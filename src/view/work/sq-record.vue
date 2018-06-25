@@ -108,6 +108,9 @@ export default {
     };
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     },
@@ -117,6 +120,9 @@ export default {
     toResume(){
       this.$router.push({name:'resume'})
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>

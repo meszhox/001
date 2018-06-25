@@ -4,12 +4,23 @@
       <i class="iconfont icon-more" slot="right" />
     </van-nav-bar>
     <div style="padding-top:45px"></div>
-    <div>
-      <img style="width: 100%" src="../../assets/img/banner.png" alt="">
+    <div style="background:#fff">
+      <van-swipe :autoplay="3000">
+        <!-- 图片轮播 -->
+
+        <!-- <van-swipe-item v-for="(image, index) in images" :key="index">
+          <img style="width:100%" :src="image.url" alt="">
+        </van-swipe-item> -->
+
+        <van-swipe-item><img style="width:100%" src="../../assets/img/banner.png" alt=""></van-swipe-item>
+        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage2.png" alt=""></van-swipe-item>
+        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage3.png" alt=""></van-swipe-item>
+
+      </van-swipe>
     </div>
       <input class="search" placeholder="    搜索公司/职位名" />
 
-      <div class="company-item">
+      <div class="company-item" @click="toCompany">
         <div class="comLogo">
           <img src="../../assets/img/companyLogo.png" alt="">
         </div>
@@ -63,15 +74,27 @@
 import 'vant/lib/vant-css/index.css';
 import '../../assets/img/icon-fire/iconfont.css';
 import Vue from 'vue';
-import { NavBar } from 'vant';
+import { NavBar, Swipe, SwipeItem } from 'vant';
 Vue.use(NavBar)
+.use(Swipe)
+.use(SwipeItem)
 export default {
   data () {
     return {
       flag: true
     }
+  },
+  methods:{
+    menu() {   //定位页面初始位置
+      window.scrollTo(0,0);
+     },
+    toCompany(){
+    this.$router.push({name:'company-information'})
+    }
+  },
+  created(){
+    this.menu()
   }
-
 }
 </script>
 

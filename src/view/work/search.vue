@@ -8,6 +8,7 @@
       v-model="value"
       show-action
       @search="onSearch"
+      background="#ffffff"
     >
     <div slot="action" @click="onSearch">搜索</div>
     </van-search>
@@ -75,6 +76,9 @@ export default {
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     },
@@ -84,6 +88,9 @@ export default {
     toworkDetail(){
       this.$router.push({name:'workDetail'})
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>
@@ -125,8 +132,9 @@ export default {
   float: left;
   line-height: 28px;
   margin: 0 8px 10px;
-  background: #dfdfdf;
+  background: #efefef;
   border-radius: 10px;
+  color: #333
 }
 .zw-tj{
   background: #ffffff;

@@ -8,7 +8,7 @@
   </div>
   <div class="basicInfo">
     <p>基本信息</p>
-    <van-cell-group>
+    <!-- <van-cell-group>
       <van-cell title="姓名" value="内容" />
       <van-cell title="性别" value="内容" />
       <van-cell title="年龄" value="内容" />
@@ -19,7 +19,22 @@
       <van-cell title="最高学历" value="内容" />
       <van-cell title="住址" value="内容" />
       <van-cell title="薪资" value="内容" />
+    </van-cell-group> -->
+
+    <van-cell-group>
+      <van-field v-model="user.name" label="姓名:" required placeholder=""/>
+      <van-field v-model="user.sex" label="性别:" required placeholder=""/>
+      <van-field v-model="user.age" label="年龄:" required placeholder=""/>
+      <van-field v-model="user.phone" label="手机号码:" required placeholder=""/>
+      <van-field v-model="user.marriage" label="婚姻:" placeholder=""/>
+      <van-field v-model="user.baby" label="生育:" placeholder=""/>
+      <van-field v-model="user.native" label="籍贯:" required placeholder=""/>
+      <van-field v-model="user.education" label="最高学历:" required placeholder=""/>
+      <van-field v-model="user.address" label="住址:" required placeholder=""/>
+      <van-field v-model="user.salary" label="期望薪资:" required placeholder=""/>
     </van-cell-group>
+
+
   </div>
   <div class="add-button">
     <van-cell-group>
@@ -44,20 +59,38 @@ import '../../assets/img/icon-add2/iconfont.css'
 import 'vant/lib/vant-css/index.css';
 import '../../assets/img/icon-more/iconfont.css'
 import Vue from 'vue'
-import { NavBar, Cell, CellGroup } from 'vant'
+import { NavBar, Cell, CellGroup, Field } from 'vant'
 Vue.use(NavBar)
 .use(Cell)
 .use(CellGroup)
+.use(Field)
 export default {
   data(){
     return{
-
+      user:{
+        name: " ",
+        sex: " ",
+        age: " ",
+        phone: " ",
+        marriage: " ",
+        baby: " ",
+        native: " ",
+        education: " ",
+        address: " ",
+        salary: " ",
+      }
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>
@@ -92,12 +125,12 @@ export default {
 .basicInfo p{
   margin: 20px 0;
   padding: 10px 10px 8px;
-  border-bottom: 1px solid #cfcfcf;
+  /* border-bottom: 1px solid #cfcfcf; */
   font-size: 16px;
 }
-.van-cell{
+/* .van-cell{
   border-bottom: 1px solid #dfdfdf
-}
+} */
 .add-button{
   margin-top: 20px;
 }

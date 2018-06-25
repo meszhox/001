@@ -3,8 +3,19 @@
     <van-nav-bar title="首页" left-text="返回" left-arrow >
       <i class="iconfont icon-more" slot="right" />
     </van-nav-bar>
-    <div style="padding-top:45px">
-      <img @click="toCompany" style="width: 100%" src="../../assets/img/banner.png" alt="">
+    <div style="padding-top:45px;background:#fff" @click="toCompany">
+      <van-swipe :autoplay="3000">
+        <!-- 图片轮播 -->
+
+        <!-- <van-swipe-item v-for="(image, index) in images" :key="index">
+          <img style="width:100%" :src="image.url" alt="">
+        </van-swipe-item> -->
+
+        <van-swipe-item><img style="width:100%" src="../../assets/img/banner.png" alt=""></van-swipe-item>
+        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage2.png" alt=""></van-swipe-item>
+        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage3.png" alt=""></van-swipe-item>
+
+      </van-swipe>
     </div>
     <!-- <div style="height:120px;border-bottom:1px solid #cfcfcf">
       <div class="middle" @click="toRecord">
@@ -67,7 +78,7 @@
       </div>
     </div>
       <div class="search">
-        <van-search @click="onSearch" placeholder="搜索全文/职位名" v-model="value" />
+        <van-search @click="onSearch" background="#ffffff" placeholder="搜索全文/职位名" v-model="value" />
       </div>
       <div class="index-Item" @click="toDetail">
         <div class="jobDescribe">
@@ -114,12 +125,14 @@ import '../../assets/img/icon-add/iconfont.css'
 import '../../assets/img/icon-more/iconfont.css'
 import Vue from 'vue'
 import {
-  NavBar, Search, Tabbar, TabbarItem, Icon
+  NavBar, Search, Tabbar, TabbarItem, Icon, Swipe, SwipeItem
 } from 'vant';
 Vue.use(NavBar)
 .use(Search)
 .use(Tabbar)
 .use(Icon)
+.use(Swipe)
+.use(SwipeItem)
 .use(TabbarItem);
 export default {
   data () {
@@ -128,6 +141,9 @@ export default {
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     toCompany(){
       this.$router.push({name:'company'})
     },
@@ -150,6 +166,9 @@ export default {
       this.$router.push({name:'workDetail'})
     }
   },
+  created(){
+    this.menu()
+  }
 
 }
 </script>
@@ -208,8 +227,11 @@ export default {
 }
 .index-Item{
   height:90px;
-  margin:20px auto;
-  background: #ffffff
+  margin:15px auto;
+  background: #ffffff;
+  width: 94%;
+  margin-left: 3%;
+  border-radius: 6px;
 }
 .jobDescribe{
   width: 50%;

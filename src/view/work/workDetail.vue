@@ -62,7 +62,13 @@
       <i class="iconfont icon-linedesign-11"></i>
       <span>以担保或任何理由索取财物，扣押证照，均涉嫌违法，请提高警惕！</span>
     </div>
-    <button>职位申请</button>
+    <button class="zw-sq-btn" @click="confirmWork">职位申请</button>
+    <van-popup class="make-sure" v-model="showConfirm">
+      <p>确定申请以下职位？</p>
+      <p class="name-work">操作工</p>
+      <button class="not-sure" @click="cancel">取消</button>
+      <button class="decision" @click="decision">确认</button>
+    </van-popup>
   </div>
 </div>
 </template>
@@ -72,15 +78,20 @@ import '../../assets/img/collect-star/iconfont.css';
 import '../../assets/img/icons-detail/iconfont.css';
 import 'vant/lib/vant-css/index.css';
 import Vue from 'vue';
-import { NavBar } from 'vant';
-Vue.use(NavBar);
+import { NavBar, Popup } from 'vant';
+Vue.use(NavBar)
+.use(Popup)
 export default {
   data(){
     return{
       isCollect: null,
+      showConfirm: false
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     },
@@ -89,7 +100,20 @@ export default {
     },
     tocompanyInfo(){
       this.$router.push({name:'company-information'})
+    },
+    confirmWork(){
+      this.showConfirm = true
+    },
+    cancel(){
+      this.showConfirm = false
+    },
+    decision(){
+      this.$router.push({name:'succeed'})
+      this.showConfirm = false
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>
@@ -225,7 +249,7 @@ export default {
   height: 46px;
   line-height: 23px
 }
-.workPlace button{
+.zw-sq-btn{
   width: 100%;
   height: 50px;
   background: rgb(29, 70, 122);
@@ -234,5 +258,30 @@ export default {
   border-radius: 5px;
   position: fixed;
   bottom: 0;
+}
+.make-sure{
+  width: 80%;
+  height: 180px;
+  text-align: center;
+  color: #666;
+  border-radius: 6px;
+}
+.name-work{
+  font-size: 23px;
+  color: #333
+}
+.make-sure button{
+  width: 40%;
+  border: none;
+  color: #ffffff;
+  height: 37px;
+  border-radius: 3px;
+  margin: 20px 5px;
+}
+.not-sure{
+  background: #bfbfbf;
+}
+.decision{
+  background: #10b7ca
 }
 </style>

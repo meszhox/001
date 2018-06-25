@@ -16,6 +16,8 @@ Vue.use(Router);
 //     }
 //   ]
 // })
+
+// 设置路由
 const routes = [{
   path: '/',
   redirect: 'work'
@@ -23,32 +25,32 @@ const routes = [{
 {
   name: 'work',
   component: () => import('../view/work/index.vue'),
-  meta: {title: '首页'}
+  meta: {index:0, title: '首页'}
 },
 {
   name: 'company',
   component: () => import('../view/company/index.vue'),
-  meta: { title: '公司'}
+  meta: {index:0, title: '公司'}
 },
 {
   name:'sq-record',
   component: () => import('../view/work/sq-record.vue'),
-  meta:{ title: '申请记录'}
+  meta:{index:1, title: '申请记录'}
 },
 {
   name:'zw-collection',
   component: () => import('../view/work/zw-collection.vue'),
-  meta:{ title: '职位收藏'}
+  meta:{index:1, title: '职位收藏'}
 },
 {
   name:'zw-commend',
   component: () => import('../view/work/zw-commend.vue'),
-  meta:{ title: '职位推荐'}
+  meta:{index:1, title: '职位推荐'}
 },
 {
   name:'teach',
   component: () => import('../view/work/teach.vue'),
-  meta:{ title: '求职攻略'}
+  meta:{index:1, title: '求职攻略'}
 },
 {
   name:'search',
@@ -69,6 +71,11 @@ const routes = [{
   name:'company-information',
   component: () => import('../view/company/company-information.vue'),
   meta:{ title: '公司详情'}
+},
+{
+  name:'succeed',
+  component: () => import('../view/work/succeed.vue'),
+  meta:{ title: '申请成功'}
 }
 ];
 

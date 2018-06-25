@@ -34,7 +34,9 @@
       <p>2015年1月8日，《房间空气调节器节能关键技术研究及产业化》获得“国家科技进步奖”二等奖。 2016年7月20日，美的集团以221.73亿美元的营业收入首次进入《财富》世界500强名单，位列第481位。2017年5月25日，福布斯2017全球企业2000强榜单正式出炉，美的位列335名。1月5日，腾讯QQ和美的集团在深圳正式签署战略合作协议，双方将共同构建基于IP授权与物联云技术的深度合作，实现家电产品的连接、对话和远程控制。[2017天猫双十一“亿元俱乐部”榜单显示，美的位列第二名。</p>
       <button @click="showWall">收起</button>
     </div>
-    <button @click="showAll" :class="showFull ? 'show-it' : 'not-show' ">展开</button>
+    <div class="showAll-button">
+      <button @click="showAll" :class="showFull ? 'show-it' : 'not-show' ">展开</button>
+    </div>
     <div class="environment">
       <span>公司环境</span>
       <img src="../../assets/img/icon-10.png" alt="">
@@ -111,6 +113,9 @@ export default {
     }
   },
   methods:{
+    menu() {  //定位页面初始位置
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     },
@@ -126,6 +131,9 @@ export default {
     showWall(){
       this.showFull = true;
     }
+  },
+  created(){
+    this.menu()  //created生命周期调用menu函数
   }
 }
 </script>
@@ -210,7 +218,7 @@ export default {
   margin-left: 5%;
   height: 150px;
   clear: both;
-  background: #f5f5f5;
+  background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1));
   overflow: hidden;
 }
 .qy-jj{

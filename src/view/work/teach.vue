@@ -68,9 +68,15 @@ export default {
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>

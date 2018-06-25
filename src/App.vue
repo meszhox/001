@@ -1,12 +1,16 @@
 <template>
   <div id="app">
-    <router-view />
+      <router-view />
   </div>
 </template>
 
 <script>
 export default {
-
+  data(){
+    return{
+      transitionName:''
+    }
+  }
 }
 </script>
 
@@ -17,7 +21,7 @@ html{
 }
 body{
   margin: 0;
-  background-color: #dfdfdf;
+  background-color: #efefef;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Helvetica Neue",STHeiti,"Microsoft Yahei",Tahoma,Simsun,sans-serif;
   height: 100%;
   width: 100%;

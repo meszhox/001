@@ -1,4 +1,4 @@
-export const AreaList = {
+export const AreaList = {    //地址列表
     'province_list': {
       '110000': '北京市',
       '120000': '天津市',

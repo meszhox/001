@@ -24,11 +24,7 @@
       <!-- 筛选下拉菜单（底部弹出层） -->
       <van-popup v-model="showType" position="bottom" @click-overlay="closeType">
         <div class="type-box">
-          <button class="noType" @click="closeType">取消</button>
-          <button class="typeComfire" @click="comfireType(-1)">确定</button>
-          <ul>
-            <li v-for="(type,index) in types" :key="index" @click="comfireType(type.key)">{{type.value}}</li>
-          </ul>
+           <van-picker show-toolbar :columns="types" @cancel="closeType" @confirm="comfireType" />
         </div>
       </van-popup>
 
@@ -152,13 +148,13 @@ export default {
       ],
       salarys:['2k-4k','4k-6k','6k-8k','8k-10k','10k-20k','20k-50k','50k以上'],
       areaList:AreaList,
-      types:[{key:0,value:'不限'},
-           {key:1,value:'全职'},
-           {key:2,value:'兼职'},
-           {key:3,value:'实习'}]
+      types:['不限','全职','兼职','实习']
     }
   },
   methods:{
+    menu() {
+      window.scrollTo(0,0);
+     },
     goback(){
       this.$router.go(-1)
     },
@@ -170,15 +166,10 @@ export default {
       this.isActive1 = null;
       this.showType = false
     },
-    comfireType(e){
+    comfireType(value,index){
       this.isActive1 = null;
       this.showType = false;
-      if (e == -1){
-        this.type = '工作性质'
-      }
-      else{
-        this.type = this.types[e].value
-      }
+      this.type = value
     },
     chooseType2(){
       this.showType2 = true;
@@ -230,6 +221,9 @@ export default {
     toworkDetail(){
       this.$router.push({name:'workDetail'})
     }
+  },
+  created(){
+    this.menu()
   }
 }
 </script>
