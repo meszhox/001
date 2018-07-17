@@ -1,55 +1,33 @@
 <template>
   <div>
-    <van-nav-bar title="首页" left-text="返回" left-arrow >
-      <i class="iconfont icon-more" slot="right" />
+    <!-- 导航栏 -->
+    <van-nav-bar title="首页" >
     </van-nav-bar>
-    <div style="padding-top:45px;background:#fff" @click="toCompany">
+    <!-- vant 下拉刷新 -->
+    <van-pull-refresh  v-model="isLoading" @refresh="onRefresh">
+    <div style="margin-top:45px;background:#fff" @click="toCompany">
       <van-swipe :autoplay="3000">
         <!-- 图片轮播 -->
-
-        <!-- <van-swipe-item v-for="(image, index) in images" :key="index">
-          <img style="width:100%" :src="image.url" alt="">
-        </van-swipe-item> -->
-
-        <van-swipe-item><img style="width:100%" src="../../assets/img/banner.png" alt=""></van-swipe-item>
-        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage2.png" alt=""></van-swipe-item>
-        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage3.png" alt=""></van-swipe-item>
-
+        <van-swipe-item v-for="(src,index) in srcs" :key="index">
+          <img style="width:100%" :src="'http://gcbus.whyxzz.cn' + src" alt="">
+        </van-swipe-item>
       </van-swipe>
     </div>
-    <!-- <div style="height:120px;border-bottom:1px solid #cfcfcf">
-      <div class="middle" @click="toRecord">
-        <img src="../../assets/img/icon-1.png" alt="">
-        <span>申请记录</span>
-      </div>
-      <div class="middle" @click="workCollect">
-        <img src="../../assets/img/icon-2.png" alt="">
-        <span>职位收藏</span>
-      </div>
-      <div class="middle" @click="workCommend">
-        <img src="../../assets/img/icon-3.png" alt="">
-        <span>职位推荐</span>
-      </div>
-      <div class="middle" @click="teach">
-        <img src="../../assets/img/icon-4.png" alt="">
-        <span>求职攻略</span>
-      </div>
-    </div> -->
-
+    <!-- vant组件标签页,改显示图片 -->
     <van-tabbar>
-      <van-tabbar-item info="2" @click="toRecord">
+      <van-tabbar-item :info=recordNum @click="toRecord">
         <span>申请记录</span>
         <template slot="icon" slot-scope="props">
         <img src="../../assets/img/icon-1.png" />
         </template>
       </van-tabbar-item>
-      <van-tabbar-item info="5" @click="workCollect">
+      <van-tabbar-item :info=collectNum @click="workCollect">
         <span>职位收藏</span>
         <template slot="icon" slot-scope="props">
         <img src="../../assets/img/icon-2.png" />
         </template>
       </van-tabbar-item>
-      <van-tabbar-item info="23" @click="workCommend">
+      <van-tabbar-item :info=commendNum @click="workCommend">
         <span>职位推荐</span>
         <template slot="icon" slot-scope="props">
         <img src="../../assets/img/icon-3.png" />
@@ -65,67 +43,46 @@
 
     <div style="overflow:hidden">
       <div class="numInfo">
-        <span style="color:#f7364e;font-size:20px;font-weight:600">1107<sup><i class="iconfont icon-add"></i></sup></span>
+        <span style="color:#f7364e;font-size:20px;font-weight:600">{{fllows}}<sup><i class="iconfont icon-add"></i></sup></span>
         <span style="color:#565656;font-size:12px">累计关注</span>
       </div>
       <div class="numInfo">
-        <span style="color:#f7364e;font-size:20px;font-weight:600">90<sup><i class="iconfont icon-add"></i></sup></span>
+        <span style="color:#f7364e;font-size:20px;font-weight:600">{{haveCompanys}}<sup><i class="iconfont icon-add"></i></sup></span>
         <span style="color:#565656;font-size:12px">服务企业</span>
       </div>
       <div class="numInfo">
-        <span style="color:#f7364e;font-size:20px;font-weight:600">62<sup><i class="iconfont icon-add"></i></sup></span>
+        <span style="color:#f7364e;font-size:20px;font-weight:600">{{haveWorks}}<sup><i class="iconfont icon-add"></i></sup></span>
         <span style="color:#565656;font-size:12px">在找岗位</span>
       </div>
     </div>
       <div class="search">
+        <!-- vant  search组件 -->
         <van-search @click="onSearch" background="#ffffff" placeholder="搜索全文/职位名" v-model="value" />
       </div>
-      <div class="index-Item" @click="toDetail">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
+      <van-list v-model="loading" :finished="finished" :offset='220' @load="loadList" >
+        <div class="index-Item" @click="toDetail(work.ID)" v-for="(work,index) in workList" :key="index">
+          <div class="jobDescribe">
+            <span style="font-size:16px">{{work.JobName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{work.City}} | {{work.YearsMin}} - {{work.YearsMax}}年工作经验 | {{work.EduLevel}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{work.ComName}}</span>
+          </div>
+          <div class="workRight">
+            <span style="color:#f7364e;font-size:17px">{{work.SalaryMin}}K-{{work.SalaryMax}}K/月</span><br>
+            <span style="font-size:12px;color: #9b9b9b">热招中...</span>
+          </div>
         </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
+      </van-list>
 
-      <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-      <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-  </div>
+  </van-pull-refresh>
+</div>
 </template>
 
 <script>
 import 'vant/lib/vant-css/index.css';
 import '../../assets/img/icon-add/iconfont.css'
-import '../../assets/img/icon-more/iconfont.css'
 import Vue from 'vue'
 import {
-  NavBar, Search, Tabbar, TabbarItem, Icon, Swipe, SwipeItem
+  NavBar, Search, Tabbar, TabbarItem, Icon, Swipe, SwipeItem, PullRefresh, List
 } from 'vant';
 Vue.use(NavBar)
 .use(Search)
@@ -133,11 +90,26 @@ Vue.use(NavBar)
 .use(Icon)
 .use(Swipe)
 .use(SwipeItem)
+.use(PullRefresh)
+.use(List)
 .use(TabbarItem);
+document.body.addEventListener('touchstart', function () {});
 export default {
   data () {
     return {
       value: '',
+      srcs:[],
+      isLoading:false,
+      fllows:'',
+      haveCompanys:'',
+      haveWorks:'',
+      recordNum:'',
+      collectNum:'',
+      commendNum:'',
+      workList:[],
+      loading: false,
+      finished: false,
+      curPage: 1,
     }
   },
   methods:{
@@ -145,7 +117,7 @@ export default {
       window.scrollTo(0,0);
      },
     toCompany(){
-      this.$router.push({name:'company'})
+      this.$router.push({name:'login'})
     },
     toRecord(){
       this.$router.push({name:'sq-record'})
@@ -162,14 +134,91 @@ export default {
     onSearch(){
       this.$router.push({name:'search'})
     },
-    toDetail(){
-      this.$router.push({name:'workDetail'})
+    toDetail(e){
+      this.$router.push({name:'workDetail',params:{ _id: e }})
+    },
+    onRefresh(){                                 //下拉刷新
+      setTimeout(() => {
+        Vue.apiPost("/api/hr/Offers/1/r/0",{
+          _Status: "Y"
+        }).then(res => {
+          let _data = res.data.Content.Table;
+          let _DateNow = new Date();
+          for(let i=0; i<_data.length; i++){
+            let _DateOld = new Date(_data[i].Create_Date);
+            let time = this.timePicker(_DateNow,_DateOld);
+            this.$set(_data[i], 'time', time)                 //获取发布日期与当前日期的相差天数
+          }
+          this.workList = _data
+        })
+        this.$toast('最新内容已装载完毕');
+        this.isLoading = false;
+      },500)
+    },
+    loadList() {               //懒加载
+      setTimeout(() => {
+        this.$http.post("/api/hr/Offers/1/r/" + this.curPage,{ _Status: 'Y' }).then(res => {
+          let _data = res.data;
+          if (_data.Content == null){
+            this.finished = true;
+          }
+          else{
+            let _works = _data.Content.Table;
+            let _DateNow = new Date();
+            for(let i=0; i<_works.length; i++){
+              let _DateOld = new Date(_works[i].Create_Date);
+              let time = this.timePicker(_DateNow,_DateOld);
+              this.$set(_works[i], 'time', time);              //获取相差天数
+            }
+            this.workList = this.workList.concat(_works);
+            console.log(this.workList);
+          }
+           this.loading = false;
+        })
+        this.curPage ++;
+      }, 500);
+    },
+    timePicker(now,old){                  //计算相差天数
+      var timeNow = now.getTime();
+      var timeOld = old.getTime();
+      var seconds = timeNow - timeOld;
+      var days = parseInt(seconds / (1000 * 60 * 60 * 24));
+      return days
     }
+  },
+  mounted(){
+    Vue.apiGet("/api/hr/Offers/AttentionCount").then(res => {
+        this.fllows = res.data.wxUserCount;
+        this.haveCompanys = res.data.CompanyCount;
+        this.haveWorks = res.data.OfferCount;
+      })
+    Vue.apiPost("/api/hr/Offers/informationcount", { "": "" }).then(res => {
+      this.recordNum = res.data.ApplyCount;
+      this.collectNum = res.data.CollectCount;
+      this.commendNum = res.data.RecommentCount;
+      console.log(res.data)
+    })
+    Vue.apiGet("/api/hr/company/CompanyInfo/07a5d8f2-77ec-4258-81b9-f9a607c35701").then(res => {
+      let _src = res.data[0].ComImg;
+      this.srcs = JSON.parse(_src);
+      console.log(res.data);
+    })
+    Vue.apiPost("/api/hr/Offers/1/r/0",{
+      _Status: "Y"
+    }).then(res => {
+      let _data = res.data.Content.Table;
+      let _DateNow = new Date();
+      for(let i=0; i<_data.length; i++){
+        let _DateOld = new Date(_data[i].Create_Date);
+        let time = this.timePicker(_DateNow,_DateOld);
+        this.$set(_data[i], 'time', time)
+      }
+      this.workList = _data
+    })
   },
   created(){
     this.menu()
-  }
-
+  },
 }
 </script>
 
@@ -242,7 +291,10 @@ export default {
 .jobDescribe span{
   display: block;
   height: 25px;
-  line-height: 25px
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .workRight{
   width: 30%;

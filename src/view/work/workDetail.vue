@@ -1,116 +1,198 @@
 <template>
 <div>
   <van-nav-bar title="职位详情" left-text="返回" left-arrow @click-left="goback" >
-      <i class="iconfont icon-more" slot="right" />
   </van-nav-bar>
   <div class="detail-head">
     <div class="Pagetitle">
-      <span class="jobName">操作工</span>
-      <span class="salary">[4千-5千]</span>
+      <span class="jobName">{{informations.JobName}}</span>
+      <span class="salary">[{{informations.SalaryMin}}千-{{informations.SalaryMax}}千]</span>
       <i :class="[isCollect ? 'iconfont icon-shoucangxing2' : 'iconfont icon-shoucangxing', 'collect-icon']" @click="collected"></i>
     </div>
     <div class="requires">
       <div class="requireItems">
-        <i class="iconfont icon-xueli itemIcon"></i>&nbsp;<span>不限</span>
+        <i class="iconfont icon-xueli itemIcon"></i>&nbsp;<span>{{informations.EduLevel}}</span>
       </div>
       <div class="requireItems">
-        <i class="iconfont icon-yonghu itemIcon"></i>&nbsp;<span>招聘5人</span>
+        <i class="iconfont icon-yonghu itemIcon"></i>&nbsp;<span>招聘{{informations.JobCount}}人</span>
       </div>
       <div class="requireItems">
-        <i class="iconfont icon-shizhong itemIcon"></i>&nbsp;<span>04-21发布</span>
+        <i class="iconfont icon-shizhong itemIcon"></i>&nbsp;<span>{{releaseDate[1]}}-{{releaseDate[2]}}发布</span>
       </div>
     </div>
     <div class="advant-items">
-      <span class="testTime">无试用期</span>
-      <span class="testTime">包吃</span>
-      <span class="testTime">包住</span>
-      <span class="testTime">五险一金</span>
-      <span class="testTime">带薪年假</span>
+      <span v-for="(workExtend,index) in workExtends" :key="index" class="testTime">{{workExtend}}</span>
     </div>
   </div>
   <div class="workInfo">
     <div class="describeTitle">
       <i class="iconfont icon-xiangmu"></i><span class="zw-ms">职位描述</span>
-      <span class="gs-js" @click="tocompanyInfo">公司介绍 > </span>
+      <span class="gs-js" @click="tocompanyInfo(informations.Cid)">公司介绍 > </span>
     </div>
     <div class="respose">
       <p>岗位职责：</p>
-      <p>1、专业人员职位，在上级的领导和监督下定期完成量化的工作要求，并能独立处理和解决所负责的任务；</p>
-      <p>2、推行公司各类规章制度的实施；</p>
-      <p>3、执行人力资源管理各项实务的操作流程和各类规章制度的实施，配合其他业务部门工作；</p>
-      <p>4、管理劳动合同，办理用工、退工手续；</p>
-      <p>5、负责薪酬福利，项目申报等工作；</p>
-      <p>6、负责管理人力资源相关文件和档案。</p>
+      <p>{{informations.Responsibilities}}</p>
     </div>
     <div class="need">
       <p>任职资格：</p>
-      <p>1、本科以上学历，专业不限；</p>
-      <p>2、两年以上人力资源工作经验，有集团公司工作经验优先；</p>
-      <p>3、熟悉人力资源管理各项实务的操作流程，熟悉国家各项劳动人事法规政策，并能实际操作运用；</p>
-      <p>4、具有良好的职业道德，踏实稳重，工作细心，责任心强，有较强的沟通、协调能力，有团队协作精神；</p>
-      <p>5、熟练使用相关办公软件，具备基本的网络知识。</p>
+      <p>{{informations.Requirements}}</p>
     </div>
   </div>
   <div class="workPlace">
     <div class="describeTitle">
       <i class="iconfont icon-xiangmu"></i><span class="zw-ms">工作地点</span>
     </div>
-    <div style="height:90px;width:90%;margin-left:5%;margin-top:50px;background:red">
 
+    <div class="company-locate">
+      <div class="main-locate">
+        <i class="iconfont icon-dingwei"></i>
+        <p>{{informations.Location}}</p>
+        <!-- <div class="path-length">
+          <i class="iconfont icon-location" style="margin-top:13px;display:block"></i>
+          <span>9.4km</span>
+        </div> -->
+      </div>
     </div>
+
+  <!-- 百度地图插件 -->
+    <!-- <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
+      <bm-marker :position="center" :dragging="false">
+
+      </bm-marker>
+      <bm-overlay
+          pane="labelPane"
+          :class="{sample: true, active}">
+          <div>我爱北京天安门</div>
+        </bm-overlay>
+    </baidu-map> -->
+
     <div class="attention">
       <i class="iconfont icon-linedesign-11"></i>
       <span>以担保或任何理由索取财物，扣押证照，均涉嫌违法，请提高警惕！</span>
     </div>
-    <button class="zw-sq-btn" @click="confirmWork">职位申请</button>
-    <van-popup class="make-sure" v-model="showConfirm">
-      <p>确定申请以下职位？</p>
-      <p class="name-work">操作工</p>
-      <button class="not-sure" @click="cancel">取消</button>
-      <button class="decision" @click="decision">确认</button>
-    </van-popup>
+    <button class="zw-sq-btn" @click="confirmWork(informations.Cid)">职位申请</button>
   </div>
 </div>
 </template>
 
 <script>
+// import BaiduMap from 'vue-baidu-map'
 import '../../assets/img/collect-star/iconfont.css';
 import '../../assets/img/icons-detail/iconfont.css';
+import '../../assets/img/icons-locate/iconfont.css';
 import 'vant/lib/vant-css/index.css';
 import Vue from 'vue';
-import { NavBar, Popup } from 'vant';
+import { NavBar, Popup, Tab, Tabs, Dialog, Toast } from 'vant';
 Vue.use(NavBar)
 .use(Popup)
+.use(Tab)
+.use(Dialog)
+.use(Toast)
+.use(Tabs)
+// .use(BaiduMap,{     //使用地图插件
+//   ak:'XGLIYGuKpZFTyZ7yHW7g6oni0lkDjGdR'
+// })
 export default {
   data(){
     return{
-      isCollect: null,
-      showConfirm: false
+      isCollect: false,
+      center: { lng: 0, lat: 0},
+      zoom: 3,
+      show: true,
+      informations: '',
+      releaseDate: '',
+      workExtends: '',
+      workName: '',
     }
   },
   methods:{
+    // handler ({BMap, map}) {    //地图插件方法
+    //   console.log(BMap, map)
+    //   this.center.lng = 114.4414
+    //   this.center.lat = 30.5056
+    //   this.zoom = 18
+    // },
     menu() {
       window.scrollTo(0,0);
      },
     goback(){
       this.$router.go(-1)
     },
-    collected(){
+    collected(){                //收藏
+      console.log(this.isCollect)
+      let _deleteId = this.$route.params.deleteid;
+      if(this.isCollect == false){        //判断是否收藏,没有收藏则调用收藏接口
+        let _id = this.$route.params._id;
+        Vue.apiPost("/api/hr/profilecollect/1/c",{ _Offer_id: _id }).then(res => {
+          console.log(_id)
+        })
+      }
+      else{                            //已经收藏则调用取消收藏接口
+        Vue.apiPost("/api/hr/profilecollect/1/d",{ _Id: _deleteId }).then(res => {
+          console.log(_deleteId)
+        })
+      }
       this.isCollect = !this.isCollect
     },
-    tocompanyInfo(){
-      this.$router.push({name:'company-information'})
+    tocompanyInfo(id){
+      this.$router.push({name:'company-information',params: { Cid: id }})
     },
-    confirmWork(){
-      this.showConfirm = true
-    },
-    cancel(){
-      this.showConfirm = false
-    },
-    decision(){
-      this.$router.push({name:'succeed'})
-      this.showConfirm = false
+    confirmWork(cid){               //投递简历
+      let _postdata = {};
+      this.$http.post("/api/hr/profileuser/1/r",_postdata).then(res => {
+        var dataSave = new Object();
+        let _data = res.data.Content.Table[0];
+        for(let _items in _data){
+          dataSave['_' + _items] = _data[_items];
+        }
+        dataSave._IsPush = "N";
+        dataSave._Stage = "1";
+        dataSave._Readed = "N";
+        dataSave._MyReaded = "N";
+        dataSave._Result = "投递成功";
+        dataSave._Comment = "投递成功";
+        console.log(dataSave);
+        Dialog.confirm({
+          title: '确定申请该职位？',
+        }).then(() => {
+          // on confirm
+          this.$http.post("/api/hr/profile/1/c/" + cid, dataSave).then(res => {
+            console.log(res.data)
+          if(res.data.Message == 'repeat'){
+            Toast("请勿重复投递！");
+            return
+          }
+          else{
+            Dialog.alert({
+              title: '投递成功！',
+              // message: '弹窗内容'
+            }).then(() => {
+              // on close
+            });
+            // this.$router.push({name:'succeed'})
+          }
+        })
+        }).catch(() => {
+          // on cancel
+        });
+      })
     }
+  },
+  mounted(){
+    let _id = this.$route.params._id;
+    console.log(_id)
+      Vue.apiPost("/api/hr/Offers/1/r/-1",{ Id: _id}).then(res => {
+        let _data = res.data.Content.Table[0];
+        this.informations = _data;
+        this.workName = _data.JobName;
+        this.releaseDate = new Date(_data.Create_Date).toLocaleDateString().split('/');
+        this.workExtends = _data.Extend.split('-');
+      })
+      console.log(_id)
+      Vue.apiPost("/api/hr/profilecollect/1/r",{ Offer_Id: _id }).then(res => {
+        if (res.data.Content){
+          this.isCollect = true;
+        }
+      })
   },
   created(){
     this.menu()
@@ -119,6 +201,70 @@ export default {
 </script>
 
 <style scoped>
+    /* 地图插件样式 */
+/* .bm-view{
+  width: 100%;
+  height: 210px;
+  margin-top: 10px;
+}
+.sample {
+  width: 120px;
+  height: 40px;
+  line-height: 40px;
+  background: rgba(255,255,255,1);
+  overflow: hidden;
+  box-shadow: 0 0 1px #333;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  position: absolute;
+} */
+.company-locate{
+  margin-top: 20px;
+  background-image: url("../../assets/img/icon-19.png");
+  height: 150px;
+  background-size: 100% auto;
+}
+.main-locate{
+  background: #ffffff;
+  position: absolute;
+  height: 90px;
+  width: 80%;
+  margin: 30px auto auto 10%;
+  border-radius: 6px;
+  float: left;
+}
+.icon-dingwei{
+  padding-left: 10px;
+  font-size: 25px;
+  margin: auto;
+  line-height: 90px;
+  float: left;
+}
+.main-locate p{
+  width: 85%;
+  height: 90px;
+  line-height: 90px;
+  margin: 0;
+  padding-left: 5px;
+  color: #333;
+  font-size: 12px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: left;
+}
+.path-length{
+  width: 60px;
+  height: 60px;
+  margin-top: 15px;
+  float: right;
+  text-align: center;
+  font-size: 14px;
+  background: #f9f9f9;
+  margin-right: 10px;
+}
 .van-nav-bar {
   background: #1b1b1f;
   color: #ffffff;
@@ -193,6 +339,7 @@ export default {
   margin-left: 5%;
   padding-top: 15px;
   margin-top: 10px;
+  overflow: hidden;
 }
 .icon-xiangmu{
   font-size: 25px;
@@ -215,19 +362,19 @@ export default {
   color: darkslategray
 }
 .respose{
-  padding-top: 50px;
+  padding-top: 10px;
   width: 90%;
   margin-left: 5%;
 }
 .respose p,.need p{
-  margin: 0;
+  margin: 5px 0 0 0;
   font-size: 15px;
   color: #666
 }
 .need{
-  margin-top: 20px;
+  margin: 10px 0 10px 5%;
   width: 90%;
-  margin-left: 5%
+  padding: 0 0 20px 0;
 }
 .workPlace{
   background: #ffffff
@@ -240,7 +387,7 @@ export default {
 .attention{
   width: 80%;
   margin-left: 10%;
-  margin-top: 25px;
+  margin-top: 30px;
   height: 60px;
   padding-bottom: 70px;
 }
@@ -255,33 +402,7 @@ export default {
   background: rgb(29, 70, 122);
   color: #ffffff;
   border: none;
-  border-radius: 5px;
   position: fixed;
   bottom: 0;
-}
-.make-sure{
-  width: 80%;
-  height: 180px;
-  text-align: center;
-  color: #666;
-  border-radius: 6px;
-}
-.name-work{
-  font-size: 23px;
-  color: #333
-}
-.make-sure button{
-  width: 40%;
-  border: none;
-  color: #ffffff;
-  height: 37px;
-  border-radius: 3px;
-  margin: 20px 5px;
-}
-.not-sure{
-  background: #bfbfbf;
-}
-.decision{
-  background: #10b7ca
 }
 </style>

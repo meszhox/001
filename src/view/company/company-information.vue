@@ -1,115 +1,106 @@
 <template>
 <div class="com-information">
-    <van-nav-bar title="职位详情" left-text="返回" left-arrow @click-left="goback" >
-      <i class="iconfont icon-more" slot="right" />
+  <!-- vant组件 导航栏 -->
+  <van-nav-bar title="公司详情" left-text="返回" left-arrow @click-left="goback" >
   </van-nav-bar>
   <div class="company-item">
+    <!-- 公司logo -->
     <div class="comLogo">
-      <img src="../../assets/img/companyLogo.png" alt="">
+      <img :src="'http://gcbus.whyxzz.cn' + logoPath" alt="">
     </div>
     <div class="jobDescribe">
-      <span style="font-size:16px;font-weight:600">格力集团</span><br>
-      <span style="font-size:12px;color: #9b9b9b">家电产品</span>
+      <span style="font-size:16px;font-weight:600">{{mainComInfo.ComName}}</span><br>
+      <span style="font-size:12px;color: #9b9b9b">{{mainComInfo.ComBusiness}}</span>
     </div>
   </div>
+  <!-- 公司信息概要 -->
   <div class="nor-info">
-    <p>  性质：上市公司</p>
-    <p>  规模：10000-30000人</p>
-    <p>  范围：家电、物流、照明等</p>
-    <p>  地址：广东省佛山市顺德区美的大道6号</p>
-    <p>  网址：www.meidi.com</p>
+    <p>  性质：{{mainComInfo.ComNature}}</p>
+    <p>  规模：{{mainComInfo.ComScale}}</p>
+    <p>  范围：{{mainComInfo.ComBusiness}}</p>
+    <p>  地址：{{mainComInfo.ComAddress}}</p>
+    <p>  网址：{{mainComInfo.ComWebsite}}</p>
   </div>
-  <div style="background:#fff;height:auto">
-    <div class="information-post">
-      <button @click="showDetail" :class="[unDisplay ? 'not-choose' : 'active' ]">公司详情</button>
-      <button @click="showJobs" :class="[unDisplay ?  'active' : 'not-choose' ]">在招职位</button>
-    </div>
-  </div>
-  <div :class="[unDisplay ?  'show-nothing' : '' ]">
-    <div :class="[showFull ? 'show-wall' : 'qy-jj' , 'normal-style' ]">
-      <span>企业简介</span>
-      <p>美的集团（SZ.000333）是一家领先的消费电器、暖通空调、机器人及工业自动化系统、智能供应链（物流）的科技集团 。
-      <p>美的集团提供多元化的产品和服务，包括以厨房家电、冰箱、洗衣机、及各类小家电的消费电器业务、以家用空调、中央空调、供暖及通风系统的暖通空调业务；以库卡集团、安川机器人合资公司等为核心的机器人及工业自动化系统业务、以安得智联为集成解决方案服务平台的智能供应链业务。美的坚守“为客户创造价值”的原则，致力创造美好生活。美的专注于持续的技术革新，以提升产品及服务质量，令生活更舒适、更美好。</p>
-      <p>美的于1968年成立于中国广东，迄今已建立遍布全球业务平台。美的在世界范围内拥有约200家子公司、60多个海外分支机构及10个战略业务单位，同时为德国库卡集团最主要股东（约95%）。</p>
-      <p>2015年1月8日，《房间空气调节器节能关键技术研究及产业化》获得“国家科技进步奖”二等奖。 2016年7月20日，美的集团以221.73亿美元的营业收入首次进入《财富》世界500强名单，位列第481位。2017年5月25日，福布斯2017全球企业2000强榜单正式出炉，美的位列335名。1月5日，腾讯QQ和美的集团在深圳正式签署战略合作协议，双方将共同构建基于IP授权与物联云技术的深度合作，实现家电产品的连接、对话和远程控制。[2017天猫双十一“亿元俱乐部”榜单显示，美的位列第二名。</p>
-      <button @click="showWall">收起</button>
-    </div>
-    <div class="showAll-button">
-      <button @click="showAll" :class="showFull ? 'show-it' : 'not-show' ">展开</button>
-    </div>
-    <div class="environment">
-      <span>公司环境</span>
-      <img src="../../assets/img/icon-10.png" alt="">
-    </div>
-    <div class="commend-job">
-      <span>推荐职位</span>
-      <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
+  <!-- vant组件 标签页 -->
+  <van-tabs @click='changePage'  v-model="active" swipeable :line-width='140'>
+    <!-- 标签页第一个页面 -->
+    <van-tab index="0">
+      <div slot="title">
+        公司详情
+      </div>
+      <!-- 点击展开和点击收起采用不同的样式，没有数据不显示 -->
+      <div v-if="mainComInfo.ComIntroduce != null" :class="[showFull ? 'show-wall' : 'qy-jj' , 'normal-style' ]">
+        <span>企业简介</span>
+        <p>{{mainComInfo.ComIntroduce}}</p>
+        <button @click="showWall">收起</button>
+      </div>
+      <div v-if="mainComInfo.ComIntroduce != null" class="showAll-button">
+        <button @click="showAll" :class="showFull ? 'show-it' : 'not-show' ">展开</button>
+      </div>
+      <div v-if="envImgs != null" class="environment">
+        <span>公司环境</span>
+        <!-- vant 轮播插件 -->
+        <van-swipe :autoplay='null'>
+          <van-swipe-item v-for="(envImg,index) in envImgs" :key="index">
+            <img style="width:100%;height:170px" :src="'http://gcbus.whyxzz.cn' + envImg" alt="">
+          </van-swipe-item>
+        </van-swipe>
+      </div>
+      <div v-if="recommendWorks != null" class="commend-job">
+        <span>推荐职位</span>
+        <div class="index-Item" v-for="(recommendWork,index) in recommendWorks" :key="index" >
+          <div class="jobDescribe">
+            <span style="font-size:16px">{{recommendWork.JobName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{recommendWork.City}} | {{recommendWork.YearsMin}}-{{recommendWork.YearsMax}}年工作经验 | {{recommendWork.EduLevel}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{recommendWork.ComName}}</span>
+          </div>
+          <div class="workRight">
+            <span style="color:#f7364e;font-size:17px">{{recommendWork.SalaryMin}}K-{{recommendWork.SalaryMax}}K/月</span><br>
+            <span style="font-size:12px;color: #9b9b9b">3天前</span>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </van-tab>
 
-  <div :class="[unDisplay ?  '' : 'show-nothing' ]">
-    <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
+    <!-- 第二个标签页 -->
+    <van-tab index="1" title="在招职位">
+      <div @click="toWorkDetail(offering.ID)" class="index-Item" v-for="(offering,index) in offerings" :key="index">
+          <div class="jobDescribe">
+            <span style="font-size:16px">{{offering.JobName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{offering.City}} | {{offering.YearsMin}}-{{offering.YearsMax}}年工作经验 | {{offering.EduLevel}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{offering.ComName}}</span>
+          </div>
+          <div class="workRight">
+            <span style="color:#f7364e;font-size:17px">{{offering.SalaryMin}}K-{{offering.SalaryMax}}K/月</span><br>
+            <span style="font-size:12px;color: #9b9b9b">热招中</span>
+          </div>
         </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-      <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-      <div class="index-Item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-  </div>
+    </van-tab>
+  </van-tabs>
 </div>
-
 </template>
 
 <script>
 import 'vant/lib/vant-css/index.css';
-import '../../assets/img/icon-more/iconfont.css'
 import Vue from 'vue'
-import { NavBar } from 'vant'
+import { NavBar, Tab, Tabs, Swipe, SwipeItem, } from 'vant'
 Vue.use(NavBar)
+.use(Tab)
+.use(Tabs)
+.use(Swipe)
+.use(SwipeItem)
 
 export default {
   data(){
     return{
-      unDisplay: null,
       showFull: true,
+      active:0,
+      mainComInfo: '',
+      logoPath: '',
+      envImgs: '',
+      recommendPage: 1,
+      offerings: [],
+      recommendWorks: '',
     }
   },
   methods:{
@@ -119,18 +110,41 @@ export default {
     goback(){
       this.$router.go(-1)
     },
-    showDetail(){
-      this.unDisplay = null;
-    },
-    showJobs(){
-      this.unDisplay = true;
-    },
     showAll(){
       this.showFull = null;
     },
     showWall(){
       this.showFull = true;
+    },
+    toWorkDetail(e){
+      this.$router.push({name:'workDetail',params:{ _id: e }})
+    },
+    changePage(index){      //点击不同标签页触发
+      let _cid = this.$route.params.Cid;
+      Vue.apiGet("/api/hr/company/CompanyInfo/" + _cid).then(res => {
+        var _Cid = res.data[0].ID;
+        if(index == 1 ){
+        this.$http.post("/api/hr/Offers/offeron/1",{Cid: _Cid}).then(res => {
+          let _data = res.data
+          this.offerings = _data
+          console.log(this.offerings)
+        })
+      }
+      })
     }
+  },
+  mounted(){
+    let _cid = this.$route.params.Cid;   //获取上一个页面传回的Cid值
+    Vue.apiGet("/api/hr/company/CompanyInfo/" + _cid).then(res => {     //获取公司信息接口
+      this.mainComInfo = res.data[0];
+      this.logoPath = JSON.parse(res.data[0].ComLogoImg);
+      let _envImgs = res.data[0].ComImg;
+      this.envImgs = JSON.parse(_envImgs);
+    })
+    Vue.apiPost("/api/hr/Offers/OfferRecomment/" + this.recommendPage , { "": "" }).then(res => {   //获取推荐职位
+      this.recommendWorks = res.data
+      console.log(res.data)
+    })
   },
   created(){
     this.menu()  //created生命周期调用menu函数
@@ -166,66 +180,51 @@ export default {
   padding-top: 50px;
   height:90px;
 }
-.jobDescribe{
+/* .jobDescribe{
   margin-left: 8px;
   padding-top: 8px;
   float: left;
-}
+} */
 .jobDescribe span{
   display: block;
   height: 25px;
-  line-height: 25px
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .nor-info{
   height: auto;
   font-size: 14px;
   margin: 0;
   padding: 10px;
-  border-bottom: 1px solid #dfdfdf
+  word-break: normal;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 .nor-info p{
   width: 90%;
   margin:0 5% 0;
-  height: 24px;
-  line-height: 24px;
-  color: #555
-}
-.information-post{
-  overflow: hidden;
-}
-.not-choose{
-  width: 50%;
-  border: none;
-  float: left;
-  font-weight: bold;
-  color: #333;
-  line-height: 45px;
-  background: #ffffff
-}
-.active{
-  width: 50%;
-  border: none;
-  float: left;
-  font-weight: bold;
-  color: #10b7ca;
-  border-bottom: 1px solid #10b7ca;
-  line-height: 45px;
-  background: #ffffff
+  color: #555;
+
 }
 .show-wall{
   margin: 0;
   width: 90%;
   margin-left: 5%;
   height: 150px;
-  clear: both;
-  background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1));
+  /* clear: both;
+  background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1)); */
   overflow: hidden;
+  /* transition: height 2s; */
 }
 .qy-jj{
   margin: 0;
   width: 90%;
   margin-left: 5%;
   height: auto;
+  /* transition: height 2s;
+  height: 820px; */
 }
 .normal-style span{
   display: block;
@@ -270,19 +269,17 @@ export default {
 }
 .index-Item{
   height:90px;
-  margin:20px auto;
-  background: #ffffff
+  margin:15px auto;
+  background: #ffffff;
+  width: 94%;
+  margin-left: 3%;
+  border-radius: 6px;
 }
 .jobDescribe{
   width: 50%;
   margin-left: 6%;
   padding-top: 8px;
   float: left;
-}
-.jobDescribe span{
-  display: block;
-  height: 25px;
-  line-height: 25px
 }
 .workRight{
   width: 30%;
@@ -296,9 +293,6 @@ export default {
   height: 25px;
   line-height: 25px
 }
-.show-nothing{
-  display: none
-}
 .not-show{
   display: none;
 }
@@ -309,5 +303,14 @@ export default {
   border: none;
   background: #ffffff;
   line-height: 35px
+}
+.van-tabs >>> .van-tabs__wrap{
+  z-index: 0;
+}
+.van-tabs >>> .van-tab--active{
+  color: #10b7ca
+}
+.van-tabs >>> .van-tabs__line{
+  background: #10b7ca
 }
 </style>

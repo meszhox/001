@@ -1,7 +1,6 @@
 <template>
 <div>
   <van-nav-bar title="喻信中智" left-text="返回" left-arrow @click-left="goback" >
-      <i class="iconfont icon-more" slot="right" />
   </van-nav-bar>
   <div style="margin-top:45px"></div>
   <div class="send-success">

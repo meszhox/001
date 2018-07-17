@@ -8,7 +8,7 @@
 export default {
   data(){
     return{
-      transitionName:''
+
     }
   }
 }
@@ -25,5 +25,8 @@ body{
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Helvetica Neue",STHeiti,"Microsoft Yahei",Tahoma,Simsun,sans-serif;
   height: 100%;
   width: 100%;
+}
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text{
+  color: #ffffff;
 }
 </style>

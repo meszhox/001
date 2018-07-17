@@ -1,72 +1,35 @@
 <template>
   <div>
-    <van-nav-bar title="公司" left-text="返回" left-arrow >
-      <i class="iconfont icon-more" slot="right" />
+    <van-nav-bar title="公司">
     </van-nav-bar>
     <div style="padding-top:45px"></div>
     <div style="background:#fff">
       <van-swipe :autoplay="3000">
         <!-- 图片轮播 -->
-
-        <!-- <van-swipe-item v-for="(image, index) in images" :key="index">
-          <img style="width:100%" :src="image.url" alt="">
-        </van-swipe-item> -->
-
-        <van-swipe-item><img style="width:100%" src="../../assets/img/banner.png" alt=""></van-swipe-item>
-        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage2.png" alt=""></van-swipe-item>
-        <van-swipe-item><img style="width:100%" src="../../assets/img/firstpage3.png" alt=""></van-swipe-item>
+        <van-swipe-item v-for="(imgurl,index) in imgurls" :key="index">
+          <img style="width:100%" :src="'http://gcbus.whyxzz.cn' + imgurl" alt="">
+        </van-swipe-item>
 
       </van-swipe>
     </div>
-      <input class="search" placeholder="    搜索公司/职位名" />
-
-      <div class="company-item" @click="toCompany">
-        <div class="comLogo">
-          <img src="../../assets/img/companyLogo.png" alt="">
+      <input class="search" @click="onSearch" placeholder="    搜索公司/职位名" />
+      <!-- 用vant列表实现懒加载 -->
+      <van-list v-model="loading" :finished="finished" :offset='220' @load="loadList" >
+        <div class="company-item" @click="toCompany(com.ID)" v-for="(com,index) in coms" :key="index">
+          <div class="comLogo">
+            <img :src="'http://gcbus.whyxzz.cn' + com.ComLogoImg" alt="">
+          </div>
+          <div class="jobDescribe">
+            <span style="font-size:15px">{{com.ComName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{com.ComAllName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{com.ComNature}}</span>
+          </div>
+          <div class="workRight">
+            <span style="color:#f7364e;font-size:16px"><i class="iconfont icon-huore"></i>{{com.ViewCount}}</span><br>
+            <span style="font-size:12px;color: #9b9b9b">{{com.OfferCount}}个在找职位</span>
+          </div>
         </div>
-        <div class="jobDescribe">
-          <span style="font-size:15px">格力</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉格力有限公司</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉  |  生产制造</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:16px"><i class="iconfont icon-huore"></i>34212</span><br>
-          <span style="font-size:12px;color: #9b9b9b">1345个在找职位</span>
-        </div>
-      </div>
-
-      <div class="company-item">
-        <div class="comLogo">
-          <img src="../../assets/img/companyLogo.png" alt="">
-        </div>
-        <div class="jobDescribe">
-          <span style="font-size:15px">格力</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉格力有限公司</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉  |  生产制造</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:16px"><i class="iconfont icon-huore"></i>212</span><br>
-          <span style="font-size:12px;color: #9b9b9b">345个在找职位</span>
-        </div>
-      </div>
-
-      <div class="company-item">
-        <div class="comLogo">
-          <img src="../../assets/img/companyLogo.png" alt="">
-        </div>
-        <div class="jobDescribe">
-          <span style="font-size:15px">格力</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉格力有限公司</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉  |  生产制造</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:16px"><i class="iconfont icon-huore"></i>3421</span><br>
-          <span style="font-size:12px;color: #9b9b9b">135个在找职位</span>
-        </div>
-      </div>
-
-
-
+      </van-list>
   </div>
 </template>
 
@@ -74,23 +37,59 @@
 import 'vant/lib/vant-css/index.css';
 import '../../assets/img/icon-fire/iconfont.css';
 import Vue from 'vue';
-import { NavBar, Swipe, SwipeItem } from 'vant';
+import { NavBar, Swipe, SwipeItem, Loading, List } from 'vant';
 Vue.use(NavBar)
 .use(Swipe)
 .use(SwipeItem)
+.use(Loading)
+.use(List)
 export default {
   data () {
     return {
-      flag: true
+      flag: true,
+      coms: '',
+      company: '',
+      imgurls: '',
+      loading: false,
+      finished: false,
+      curPage: 2
     }
   },
   methods:{
     menu() {   //定位页面初始位置
       window.scrollTo(0,0);
      },
-    toCompany(){
-    this.$router.push({name:'company-information'})
-    }
+    toCompany(e){
+    this.$router.push({name:'company-information',params:{Cid: e}})
+    },
+    loadList() {
+      setTimeout(() => {       //实现列表懒加载
+        Vue.apiGet("/api/hr/company/ComOfferList/" + this.curPage).then(res => {
+          let _data = res.data;
+          if (_data.length == 0){
+            this.finished = true;
+          }
+          else{
+            this.coms = this.coms.concat(_data);
+          }
+           this.loading = false;
+        })
+        this.curPage ++;
+      }, 500);
+    },
+    onSearch(){
+      this.$router.push({name:'search'})
+    },
+  },
+  mounted(){
+    Vue.apiGet("/api/hr/company/ComOfferList/1").then(res => {
+      this.coms = res.data
+    })
+    Vue.apiGet("/api/hr/company/CompanyInfo/07a5d8f2-77ec-4258-81b9-f9a607c35701").then(res => {
+      this.company = res.data[0];
+      let _src = res.data[0].ComImg;
+      this.imgurls = JSON.parse(_src);
+    })
   },
   created(){
     this.menu()
@@ -129,8 +128,11 @@ export default {
 }
 .company-item{
   height:90px;
-  margin:20px auto;
-  background: #ffffff
+  margin:15px auto;
+  background: #ffffff;
+  width: 94%;
+  margin-left: 3%;
+  border-radius: 6px;
 }
 .jobDescribe{
   width: 38%;
@@ -141,7 +143,10 @@ export default {
 .jobDescribe span{
   display: block;
   height: 25px;
-  line-height: 25px
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .workRight{
   width: 27%;

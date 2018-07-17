@@ -1,23 +1,19 @@
 <template>
   <div class="zwCommend">
     <van-nav-bar title="职位推荐" left-text="返回" left-arrow @click-left="goback" >
-      <i class="iconfont icon-more" slot="right" />
     </van-nav-bar>
     <div style="height:45px;border-bottom:1px solid #cfcfcf;padding-top:47px;background:#fff">
       <div :class="[isActive1 ? 'active' : 'screen', 'screen']" @click="chooseType">
-        <span>{{type}}</span>
-        <i class="iconfont icon-bottom"></i>
+        <span>{{type}}<i class="iconfont icon-sarrowbottom"></i></span>
       </div>
       <div :class="[isActive2 ? 'active' : 'screen', 'screen']" @click="chooseType2">
-        <span>{{type2}}<i class="iconfont icon-bottom"></i></span>
+        <span>{{type2}}<i class="iconfont icon-sarrowbottom"></i></span>
       </div>
       <div :class="[isActive3 ? 'active' : 'screen', 'screen']" @click="chooseSalary">
-        <span>{{salary}}</span>
-        <i class="iconfont icon-bottom"></i>
+        <span>{{salary}}<i class="iconfont icon-sarrowbottom"></i></span>
       </div>
       <div :class="[isActive4 ? 'active' : 'screen', 'screen']" @click="chooseCity">
-        <span>{{city}}</span>
-        <i class="iconfont icon-bottom"></i>
+        <span>{{city}}<i class="iconfont icon-sarrowbottom"></i></span>
       </div>
     </div>
 
@@ -30,96 +26,57 @@
 
       <van-popup v-model="showType2" position="bottom" @click-overlay="closeType2">
         <div>
-          <!-- <button class="noType" @click="closeType2">取消</button>
-          <button class="typeComfire" @click="comfireType2">确定</button> -->
-          <van-picker show-toolbar :columns="columns" @change="onChange"  @cancel="closeType2" @confirm="comfireType2" />
+          <van-picker show-toolbar :columns="workCate"  @cancel="closeType2" @confirm="comfireType2" />
         </div>
       </van-popup>
 
       <van-popup v-model="showSalary" position="bottom" @click-overlay="closeSalary">
         <div class="type-box">
           <van-picker show-toolbar :columns="salarys" @cancel="closeSalary" @confirm="comfireSalary" />
-          <!-- <ul>
-            <li>全部</li>
-            <li>2K-4K</li>
-            <li>4K-6K</li>
-            <li>6K-8K</li>
-            <li>8K-12K</li>
-            <li>12K-20K</li>
-            <li>20K-50K</li>
-            <li>50K以上</li>
-          </ul> -->
         </div>
       </van-popup>
 
       <van-popup v-model="showCity" position="bottom" @click-overlay="closeCity">
         <div class="type-box">
-          <!-- <button class="noType" @click="closeCity">取消</button>
-          <button class="typeComfire" @click="comfireCity">确定</button>
-          <van-area :area-list="areaList" /> -->
+          <!-- vant组件 地址选择权 -->
           <van-area :area-list="areaList" :columns-num="2" @cancel="closeCity" @confirm="comfireCity" />
         </div>
       </van-popup>
-
-      <div class="commend-item" @click="toworkDetail">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
+      <!-- vant组件 list插件 -->
+      <van-list v-model="loading" :finished="finished" :offset='220' @load="loadList" >
+        <div class="commend-item" @click="toworkDetail(work.ID)" v-for="(work,index) in works" :key="index">
+          <div class="jobDescribe">
+            <span style="font-size:16px">{{work.JobName}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{work.City}} | {{work.YearsMin}}-{{work.YearsMax}}年工作经验 | {{work.EduLevel}}</span>
+            <span style="font-size:12px;color: #9b9b9b">{{work.ComName}}</span>
+          </div>
+          <div class="workRight">
+            <span style="color:#f7364e;font-size:17px">{{work.SalaryMin}}K-{{work.SalaryMax}}K/月</span><br>
+            <span style="font-size:12px;color: #9b9b9b">热招中...</span>
+          </div>
         </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-      <div class="commend-item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
-
-      <div class="commend-item">
-        <div class="jobDescribe">
-          <span style="font-size:16px">流水线安装工</span>
-          <span style="font-size:12px;color: #9b9b9b">武汉 | 3-5年工作经验 | 中专</span>
-          <span style="font-size:12px;color: #9b9b9b">湖北武汉美的有限公司</span>
-        </div>
-        <div class="workRight">
-          <span style="color:#f7364e;font-size:17px">3K-5K/月</span><br>
-          <span style="font-size:12px;color: #9b9b9b">3天前</span>
-        </div>
-      </div>
+      </van-list>
 
   </div>
 </template>
 
 <script>
-import {AreaList} from '@/router/area.js'
+import {AreaList} from '@/router/area.js'      //导入地址信息
 import '../../assets/img/bottom-arrow/iconfont.css';
-import '../../assets/img/icon-more/iconfont.css'
 import 'vant/lib/vant-css/index.css';
+import '../../assets/img/icon-bottom-s/iconfont.css'
 import Vue from 'vue';
 import {
-  NavBar, Popup, Picker, Area, Toast
+  NavBar, Popup, Picker, Area, Toast, List
 } from 'vant';
 Vue.use(NavBar)
 .use(Popup)
 .use(Area)
 .use(Toast)
+.use(List)
 .use(Picker);
 
-const works = {
-  '市场类' : ['全部','销售总监','部门经理','市场总监','客户经理','销售助理'],
-  '生产类' : ['全部','机械工程师','机械设计师','机械制图','机电工程师','磨具工程师','材料工程师','焊接工程师'],
-  '管理类' : ['全部','行政主管','行政经理','行政总监','经理助理','事业部负责人','CEO/总裁','人事主管']
-}
+
 export default {
   data(){
     return{
@@ -135,20 +92,14 @@ export default {
       isActive2:null,
       isActive3:null,
       isActive4:null,
-      columns: [
-        {
-          values: Object.keys(works),
-          className: 'column1'
-        },
-        {
-          values: works['市场类'],
-          className: 'column2',
-          defaultIndex: 0
-        }
-      ],
-      salarys:['2k-4k','4k-6k','6k-8k','8k-10k','10k-20k','20k-50k','50k以上'],
+      salarys:['不限','1k-2k','3k-5k','6k-8k','9k-10k','10k-20k','20k-50k','50k-100'],
       areaList:AreaList,
-      types:['不限','全职','兼职','实习']
+      types:['不限','全职','兼职','实习'],
+      workCate: [],
+      newPage: 1,
+      works: '',
+      loading: false,
+      finished: false,
     }
   },
   methods:{
@@ -166,10 +117,41 @@ export default {
       this.isActive1 = null;
       this.showType = false
     },
-    comfireType(value,index){
+    comfireType(value,index){      //确定工作性质
       this.isActive1 = null;
       this.showType = false;
-      this.type = value
+      this.type = value;
+      if(this.salary == '不限' || this.salary == '薪资'){
+        var minSalary = null;
+        var maxSalary = null;
+      }
+      else{
+        let _spiltSalary = this.salary.split("");
+        var minSalary = _spiltSalary[0];
+        var maxSalary = _spiltSalary[3];
+      }
+      if(value === '工作性质' || value === '不限'){
+        var _Norm = null
+      }
+      else{
+        var _Norm = value
+      }
+      if(this.type2 === '工作类型' || this.type2 === '不限'){
+        var _JobCate = null
+      }
+      else{
+        var _JobCate = this.type2
+      }
+        Vue.apiPost("/api/hr/Offers/conditionquery/1",
+        {
+          Norm: _Norm,
+          JobCate: _JobCate,
+          SalaryMin: minSalary,
+          SalaryMax: maxSalary,
+          City: [this.city == '城市' ? null : this.city ],
+        }).then(res => {
+          this.works = res.data
+        })
     },
     chooseType2(){
       this.showType2 = true;
@@ -179,15 +161,41 @@ export default {
       this.isActive2 = null;
       this.showType2 = false
     },
-    comfireType2(value,index){
+    comfireType2(value,index){          //确定工作类型
       this.isActive2 = null;
       this.showType2 = false;
-      if(index[1] == 0){
-        this.type2 = value[0]
+      this.type2 = value;
+      if(this.salary == '不限' || this.salary == '薪资'){
+        var minSalary = null;
+        var maxSalary = null;
       }
       else{
-        this.type2 = value[1]
+        let _spiltSalary = this.salary.split("");
+        var minSalary = _spiltSalary[0];
+        var maxSalary = _spiltSalary[3];
       }
+      if(this.type === '工作性质' || this.type === '不限'){
+        var _Norm = null
+      }
+      else{
+        var _Norm = this.type
+      }
+      if(value === '工作类型' || value === '不限'){
+        var _JobCate = null
+      }
+      else{
+        var _JobCate = value
+      }
+        Vue.apiPost("/api/hr/Offers/conditionquery/1",
+        {
+          Norm: _Norm,
+          JobCate: _JobCate,
+          SalaryMin: minSalary,
+          SalaryMax: maxSalary,
+          City: [this.city == '城市' ? null : this.city ],
+        }).then(res => {
+          this.works = res.data
+        })
     },
     chooseSalary(){
       this.showSalary = true;
@@ -197,10 +205,41 @@ export default {
       this.isActive3 = null;
       this.showSalary = false;
     },
-    comfireSalary(value,index){
+    comfireSalary(value,index){       //确定薪资
       this.isActive3 = null;
       this.showSalary = false;
       this.salary = value;
+      if(this.salary == '不限' || this.salary == '薪资'){
+        var minSalary = null;
+        var maxSalary = null;
+      }
+      else{
+        let _spiltSalary = this.salary.split("");
+        var minSalary = _spiltSalary[0];
+        var maxSalary = _spiltSalary[3];
+      }
+      if(this.type === '工作性质' || this.type === '不限'){
+        var _Norm = null
+      }
+      else{
+        var _Norm = this.type
+      }
+      if(this.type2 === '工作类型' || this.type2 === '不限'){
+        var _JobCate = null
+      }
+      else{
+        var _JobCate = this.type2
+      }
+        Vue.apiPost("/api/hr/Offers/conditionquery/1",
+        {
+          Norm: _Norm,
+          JobCate: _JobCate,
+          SalaryMin: minSalary,
+          SalaryMax: maxSalary,
+          City: [this.city == '城市' ? null : this.city],
+        }).then(res => {
+          this.works = res.data
+        })
     },
     chooseCity(){
       this.showCity = true;
@@ -210,17 +249,132 @@ export default {
       this.showCity = false;
       this.isActive4 = null
     },
-    comfireCity(columnsNum){
+    comfireCity(columnsNum){          //确定地点
       this.showCity = false;
       this.isActive4 = null;
       this.city = columnsNum[1].name
+      if(this.salary == '不限' || this.salary == '薪资'){
+        var minSalary = null;
+        var maxSalary = null;
+      }
+      else{
+        let _spiltSalary = this.salary.split("");
+        var minSalary = _spiltSalary[0];
+        var maxSalary = _spiltSalary[3];
+      }
+      if(this.type === '工作性质' || this.type === '不限'){
+        var _Norm = null
+      }
+      else{
+        var _Norm = this.type
+      }
+      if(this.type2 === '工作类型' || this.type2 === '不限'){
+        var _JobCate = null
+      }
+      else{
+        var _JobCate = this.type2
+      }
+        this.$http.post("/api/hr/Offers/conditionquery/1",
+        {
+          Norm: _Norm,
+          JobCate: _JobCate,
+          SalaryMin: minSalary,
+          SalaryMax: maxSalary,
+          City: columnsNum[1].name == '城市' ? null : columnsNum[1].name,
+        }).then(res => {
+          this.works = res.data
+        })
     },
-     onChange(picker, values) {
-      picker.setColumnValues(1, works[values[0]]);
+    //  onChange(picker, values) {
+    //   picker.setColumnValues(1, works[values[0]]);
+    // },
+    toworkDetail(e){
+      this.$router.push({name:'workDetail',params:{ _id: e }})
     },
-    toworkDetail(){
-      this.$router.push({name:'workDetail'})
+    loadList() {                             //懒加载
+      let _ch1 = this.type;
+      let _ch2 = this.type2;
+      let _ch3 = this.salary;
+      console.log(this.salary);
+      if(_ch1 === '工作性质' || _ch1 === '不限'){
+        _ch1 = 0
+      }
+      if(_ch2 === '工作类型' || _ch2 === '不限'){
+        _ch2 = 0
+      }
+      if(_ch3 === '薪资' || _ch3 === '不限'){
+        _ch3 = 0
+      }
+      if(_ch1 == 0 && _ch2 == 0  && _ch3 == 0 && this.city == '城市'){            //判断是否加入筛选条件
+        setTimeout(() => {
+          this.$http.post("/api/hr/Offers/conditionquery/" + this.newPage,{}).then(res => {   //没有加入筛选条件调用的接口
+            let _data = res.data;
+            if (_data.length == 0){
+              this.finished = true;
+            }
+            else{
+              this.works = this.works.concat(_data);
+            }
+            this.loading = false;
+          })
+          this.newPage ++;
+        }, 500);
+      }
+      else{
+        let _select1 = this.type;
+        let _select2 = this.type2;
+        let _select3 = this.salary;
+        let _select4 = this.city;
+        if(_select1 == '工作性质' || _select1 == '不限'){
+          _select1 = null
+        }
+        if(_select2 == '工作类型' || _select2 == '不限'){
+          _select2 = null
+        }
+        if(_select3 == '薪资' || _select3 == '不限'){
+          _SalaryMin = null;
+          _SalaryMax = null;
+        }
+        else{
+          let _salarys = _select3.split("");
+          console.log(_salarys)
+          var _SalaryMin = _salarys[0];
+          var _SalaryMax = _salarys[3];
+        }
+        if(_select4 == '城市'){
+          _select4 = null
+        }
+        setTimeout(() => {
+          this.$http.post("/api/hr/Offers/conditionquery/" + this.newPage,{             //有筛选条件调用的接口
+            Norm: _select1,
+            JobCate: _select2,
+            SalaryMin: _SalaryMin,
+            SalaryMax: _SalaryMax,
+            City: _select4
+          }).then(res => {
+            let _data = res.data;
+            if (_data.length == 0){
+              return this.finished = true;
+            }
+            else{
+              this.works = this.works.concat(_data);
+            }
+            this.loading = false;
+          })
+          this.newPage ++;
+        }, 500);
+      }
     }
+  },
+  mounted(){
+    Vue.apiPost("/api/hr/Offers/OfferRecomment/1", { "": "" }).then(res => {
+      this.works = res.data
+    })
+    Vue.apiGet("/api/hr/Offers/jobcate").then(res => {
+      let _data = res.data;
+      this.workCate = _data
+      this.workCate.unshift("不限")
+    })
   },
   created(){
     this.menu()
@@ -236,7 +390,7 @@ export default {
   position: fixed;
   top: 0;
 }
-.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text,.icon-more::before{
+.van-nav-bar >>> .van-nav-bar__arrow::before,.van-nav-bar >>> .van-nav-bar__text{
   color: #ffffff;
 }
 .active{

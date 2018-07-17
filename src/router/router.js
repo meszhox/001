@@ -76,6 +76,46 @@ const routes = [{
   name:'succeed',
   component: () => import('../view/work/succeed.vue'),
   meta:{ title: '申请成功'}
+},
+{
+  name:'add-workex',
+  component: () => import('../view/work/add-workex.vue'),
+  meta:{ title:'工作经验'}
+},
+{
+  name:'basicInfo-detail',
+  component: () => import('../view/work/basicInfo-detail.vue'),
+  meta:{ title:'完善基础信息'}
+},
+{
+  name:'add-educationInfo',
+  component: () => import('../view/work/add-educationInfo.vue'),
+  meta:{ title:'添加教育经历'}
+},
+{
+  name:'addworkEx',
+  component: () => import('../view/work/addworkEx.vue'),
+  meta:{ title:'添加工作经历信息'}
+},
+{
+  name:'add-imageResume',
+  component: () => import('../view/work/add-imageResume.vue'),
+  meta:{ title:'添加附件简历'}
+},
+{
+  name:'login',
+  component: () => import('../view/manage/login.vue'),
+  meta:{ title:'登陆'}
+},
+{
+  name:'manage',
+  component: () => import('../view/manage/manage.vue'),
+  meta:{ title:'管理'}
+},
+{
+  name:'comMange',
+  component:() => import('../view/manage/comMange.vue'),
+  meta:{ title:'公司管理'}
 }
 ];
 
