@@ -4,7 +4,7 @@
       <div>
         <!-- <van-search @click="searchItem(value)" placeholder="搜索" v-model="value" /> -->
         <van-search v-model="value" show-action @search="searchItem(value)">
-          <div slot="action" @click="searchItem(value)">搜索</div>
+          <button slot="action" @click="searchItem(value)">搜索</button>
         </van-search>
       </div>
       <div class="header">
@@ -32,9 +32,12 @@
       <div class="text-inside">
         <div style="overflow:hidden;width:95%">
           <span class="pl-ts">批量推送</span>
-          <button class="push-all">全部推送</button>
+          <button class="push-all" @click="pushAll">全部推送</button>
         </div>
-        <div v-for="(item,index) in pushedItems" :key="index" class="record">
+        <div v-if="pushedItems.length == 0">
+            <p class="no-resume">暂无待推送简历</p>
+        </div>
+        <div v-else v-for="(item,index) in pushedItems" :key="index" class="record">
           <div class="head-image">
             <img :src="item.wxinfo.headimgurl" alt="">
           </div>
@@ -58,6 +61,7 @@
 </template>
 
 <script>
+import 'vant/lib/vant-css/index.css';
 import '../../assets/css/manage.css'
 import '../../assets/img/icon-bottom-s/iconfont.css'
 import { Search, Picker, Popup, Loading, Dialog, Toast } from 'vant'
@@ -91,9 +95,6 @@ export default {
     }
   },
   methods:{
-    onSearch(){
-
-    },
     active(e,id){
       if(id){
         this.moment = e;
@@ -125,7 +126,7 @@ export default {
             }
           }
           else{
-            this.pushedItems = null
+            this.pushedItems = []
           }
         })
       }
@@ -236,13 +237,68 @@ export default {
     onCancel() {
 
     },
+    pushAll(){
+      var receives = new Array();
+      Dialog.confirm({
+        title: '确定推送全部简历？'
+      }).then(() => {
+        this.$http.post("/api/hr/profile/1/wxProfile/-1",{}).then(res => {
+          if(res.data.Message = 'success'){
+            let _data = res.data.Content.Table;
+            for(let i = 0; i < _data.length; i++){
+              if(_data[i].IsPush == 'N'){
+                receives.push({Cid: _data[i].Cid, ReceiveID: _data[i].ID});
+              }
+            }
+            if(receives.length > 0){
+                this.$http.post("/api/hr/profilepush/1/c",{
+                  receives
+                })
+                location.reload()
+              }
+            else{
+              Toast("没有可推送数据！")
+            }
+          }
+          else{
+            Toast("没有可推送数据！")
+          }
+        })
+      }).catch({
+
+      })
+    },
     loading(){
-      this.showLoading = true
-      this.isdisplay = true
-      setTimeout(() => {
-        this.isdisplay = false;
-        this.showLoading = false
-      },1000)
+      this.showLoading = true;
+      this.isdisplay = true;
+      this.page ++ ;
+      this.$http.post("/api/hr/profile/1/wxProfile/" + this.page,{
+        _Cid: this.CID,
+        _Create_Date: this.passTime
+      }).then(res => {
+        let _items = new Array();
+        if(res.data.Message == success){
+          let _data = res.data.Content.Table;
+          for(let i = 0; i < _data.length; i++){
+            if(_data[i].IsPush == 'N'){
+              let _wxinfo = JSON.parse(_data[i].wxUserInfo);
+              let _birth = new Date(_data[i].Birth);
+              let _age = this.timePicker(DateNow,_birth);
+              _data[i].age = _age;
+              _data[i].wxinfo = _wxinfo;
+              _items.push(_data[i]);
+            }
+          }
+          this.pushedItems.concat(_items);
+          this.showLoading = false;
+          this.isdisplay = false;
+        }
+        else{
+          Toast("没有更多数据！")
+          this.showLoading = false;
+          this.isdisplay = false;
+        }
+      })
     },
     timePicker(now,old){                  //计算相差天数
       var timeNow = now.getTime();
@@ -260,7 +316,7 @@ export default {
     },
     pushOne(cid,id){
       var receives = new Array();
-      receives.push({Cid: cid, ReceiveID: id})
+      receives.push({Cid: cid, ReceiveID: id});
       Dialog.confirm({
         title: '确定推送改简历？',
       }).then(() => {
@@ -283,9 +339,14 @@ export default {
         }
         if(searchCom.length > 0){
           this.coms = searchCom;
-          let _index = this.moment;
-          let _id = this.coms[_index].ID;
-          this.active(_index,_id)
+          if(this.moment <= searchCom.length){
+            let _index = this.moment;
+            let _id = this.coms[_index].ID;
+            this.active(_index,_id)
+          }
+          else{
+            this.active(0,this.coms[0].ID)
+          }
         }
         else{
           Toast("无匹配项！");
@@ -345,7 +406,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.van-search__action button{
+    padding: 0 12px;
+    border: none;
+    right: 10px;
+    margin-right: 8px;
+    color: #fff;
+    border-radius: 5px;
+    margin-left: 10px;
+    background: #3385ff
+}
 .header button{
   width: 50%;
   height: 40px;
@@ -385,6 +456,10 @@ export default {
 .active{
   border-left: 2px solid;
   color: #3385ff;
+}
+.no-resume{
+  text-align: center;
+  color: #666
 }
 .main-text{
   width: 75%;

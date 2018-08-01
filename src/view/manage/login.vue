@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{height: bodyHeight + 'px'}" style="background: rgb(32, 41, 56)">
     <div class="login-logo">
 
     </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import '../../assets/css/login.css';
+// import '../../assets/css/login.css';
 import '../../assets/img/icon-login/iconfont.css';
 import Vue from 'vue';
 import { Toast } from 'vant';
@@ -30,6 +30,7 @@ export default {
     return{
       userName: '',
       password: '',
+      bodyHeight: '',
     }
   },
   methods:{
@@ -44,7 +45,9 @@ export default {
             this.$router.push({name:'manage'})
           }
           else{
-            this.$router.push({name:'comMange'})
+            let _cid = res.data.Content.Table[0].Cid
+            this.$router.push({name:'comMange',params:{Cid: _cid}})
+            console.log(_cid)
           }
         }
         else{
@@ -53,6 +56,10 @@ export default {
         }
       })
     }
+  },
+  mounted(){
+    let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    this.bodyHeight = h;
   }
 }
 </script>

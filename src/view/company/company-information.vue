@@ -142,7 +142,9 @@ export default {
       this.envImgs = JSON.parse(_envImgs);
     })
     Vue.apiPost("/api/hr/Offers/OfferRecomment/" + this.recommendPage , { "": "" }).then(res => {   //获取推荐职位
-      this.recommendWorks = res.data
+      if(res.data != "未将对象引用设置到对象的实例。"){
+        this.recommendWorks = res.data
+      }
       console.log(res.data)
     })
   },

@@ -116,6 +116,11 @@ const routes = [{
   name:'comMange',
   component:() => import('../view/manage/comMange.vue'),
   meta:{ title:'公司管理'}
+},
+{
+  name: 'viewResume',
+  component:() => import('../view/manage/viewResume.vue'),
+  meta:{ title:'查看简历'}
 }
 ];
 
