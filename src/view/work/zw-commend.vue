@@ -368,7 +368,9 @@ export default {
   },
   mounted(){
     Vue.apiPost("/api/hr/Offers/OfferRecomment/1", { "": "" }).then(res => {
-      this.works = res.data
+      if(res.data != "未将对象引用设置到对象的实例。"){
+        this.works = res.data
+      }
     })
     Vue.apiGet("/api/hr/Offers/jobcate").then(res => {
       let _data = res.data;

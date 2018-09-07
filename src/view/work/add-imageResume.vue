@@ -56,7 +56,8 @@ export default {
       }
       _allData._imagePath = _path;
       _allData._FileName = _name;
-      delete _allData._imagePath;
+      // delete _allData._imagePath;
+      console.log(_allData)
       this.$http.post("/api/hr/profileuser/1/m",_allData)
       this.$router.replace({name:'resume'});
     },
